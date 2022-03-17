@@ -33,9 +33,11 @@ jobs:
     - name: Check out Git repository
       uses: actions/checkout@v2
       
-    - name: fetch Trilium Note codes
-      run: ./clone_repo.sh
-      shell: bash
+    - name: clone trilium
+      uses: actions/checkout@v2
+      with:
+          repository: zadam/trilium
+          path: ./
 
     - name: disable auto-update
       run: python disable_update.py
