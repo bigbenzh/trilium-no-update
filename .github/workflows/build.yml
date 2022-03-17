@@ -1,5 +1,4 @@
 name: build
-
 on:
   workflow_dispatch:
     inputs:
@@ -23,7 +22,7 @@ on:
         required: true
         default: true
   schedule:
-  - cron: 0 0 */7 * *
+    - cron: 0 0 */7 * *
         
 jobs:
   compile:
@@ -79,7 +78,7 @@ jobs:
 
   release:
     if: ${{ github.event_name == 'workflow_dispatch'}}
-    needs: compile
+    needs: [compile]
     runs-on: ubuntu-latest
     steps:
     - name: download
@@ -101,7 +100,7 @@ jobs:
           
   auto-release:
     if: ${{ github.event_name == 'schedule'}}
-    needs: compile
+    needs: [compile]
     runs-on: ubuntu-latest
     steps:
     - name: download
