@@ -48,7 +48,7 @@ jobs:
         python-version: '3.x'
 
     - name: fetch Trilium Note codes
-      run: bash clone_repo.sh
+      run: ./clone_repo.sh
 
     - name: disable auto-update
       run: python disable_update.py
