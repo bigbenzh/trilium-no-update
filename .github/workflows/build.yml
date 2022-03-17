@@ -32,7 +32,14 @@ jobs:
     steps:
     - name: Check out Git repository
       uses: actions/checkout@v2
+      
+    - name: fetch Trilium Note codes
+      run: ./clone_repo.sh
+      shell: bash
 
+    - name: disable auto-update
+      run: python disable_update.py
+      
     - name: Install Wine
       run: |
           sudo dpkg --add-architecture i386
@@ -45,16 +52,11 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: ${{ env.NODE_VERSION }}
+        
     - name: Setup Python 3
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
-
-    - name: fetch Trilium Note codes
-      run: ./clone_repo.sh
-
-    - name: disable auto-update
-      run: python disable_update.py
 
     - name: pre-build
       run: |
