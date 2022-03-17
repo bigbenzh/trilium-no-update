@@ -74,7 +74,7 @@ jobs:
     - name: upload
       uses: actions/upload-artifact@v3
       with:
-        path: dist/
+        path: dist/*.*
 
   release:
     if: ${{ github.event_name == 'workflow_dispatch'}}
