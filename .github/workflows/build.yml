@@ -94,6 +94,7 @@ jobs:
         name: test
         body: "TODO: Fill this changelog. Sorry for the inconvenience!"
         draft: ${{ github.event.inputs.is-draft }}
+        tag: test
         prerelease: ${{ github.event.inputs.is-pre-release }}
         files: |
           *.*
@@ -114,6 +115,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         name: auto-build
+        tag: latest
         body: "An auto build of the latest Trilium"
         prerelease: false
         files: |
