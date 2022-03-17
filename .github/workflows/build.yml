@@ -1,0 +1,77 @@
+name: build
+
+on:
+  workflow_dispatch:
+    inputs:
+      build-target:
+        description: 'Build Target ("nightly"/"beta"/"non-release")'
+        type: string
+        required: true
+        default: "beta"
+      git-ref:
+        description: "Release Git Ref(master)"
+        required: true
+        default: "master"
+      is-draft:
+        description: 'Draft Release? (Beta only, Nightly will always be a non-draft)'
+        type: boolean
+        required: true
+        default: true
+      is-pre-release:
+        description: 'Pre Release? (labeled as "PreRelease")'
+        type: boolean
+        required: true
+        default: true
+        
+jobs:
+  compile:
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Check out Git repository
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.inputs.git-ref }}
+    
+    - name: Install Wine
+      run: |
+          sudo dpkg --add-architecture i386
+          wget -qO - https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add -
+          sudo add-apt-repository ppa:cybermax-dexter/sdl2-backport
+          sudo apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu $(lsb_release -cs) main"
+          sudo apt install --install-recommends winehq-stable
+
+    - name: Install Node.js, NPM and Yarn
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+    - name: Setup Python 3
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: fetch Trilium Note codes
+      run: bash clone_repo.sh
+
+    - name: disable auto-update
+      run: python disable_update.py
+
+    - name: pre-build
+      run: |
+          mkdir -p dist/trilium-src 
+          npm install
+    
+    - name: build
+      run:  bin/build.sh
+
+    - name: Create Release Draft
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: "v0.01"
+        name: test
+        body: "TODO: Fill this changelog. Sorry for the inconvenience!"
+        draft: ${{ github.event.inputs.is-draft }}
+        prerelease: ${{ github.event.inputs.is-pre-release }}
+        files: |
+          dist/*.*
