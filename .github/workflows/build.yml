@@ -29,9 +29,7 @@ jobs:
     steps:
     - name: Check out Git repository
       uses: actions/checkout@v2
-      with:
-        ref: ${{ github.event.inputs.git-ref }}
-    
+
     - name: Install Wine
       run: |
           sudo dpkg --add-architecture i386
