@@ -87,15 +87,12 @@ jobs:
         name: artifact
 
     - name: Create Release Draft
-      uses: softprops/action-gh-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: "marvinpinto/action-automatic-releases@latest"
       with:
-        name: test
-        body: "TODO: Fill this changelog. Sorry for the inconvenience!"
-        draft: ${{ github.event.inputs.is-draft }}
-        tag: test
-        prerelease: ${{ github.event.inputs.is-pre-release }}
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "test"
+        prerelease: true
+        title: "Test"
         files: |
           *.*
           
@@ -110,13 +107,11 @@ jobs:
         name: artifact
 
     - name: Create Release Draft
-      uses: softprops/action-gh-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: "marvinpinto/action-automatic-releases@latest"
       with:
-        name: auto-build
-        tag: latest
-        body: "An auto build of the latest Trilium"
-        prerelease: false
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "latest"
+        prerelease: true
+        title: "Auto Build"
         files: |
           *.*
