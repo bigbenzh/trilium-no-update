@@ -37,11 +37,8 @@ jobs:
       uses: actions/checkout@v2
       with:
           repository: zadam/trilium
-          path: ./
-
-    - name: disable auto-update
-      run: python disable_update.py
-      
+          path: trilium
+          
     - name: Install Wine
       run: |
           sudo dpkg --add-architecture i386
@@ -62,8 +59,13 @@ jobs:
 
     - name: pre-build
       run: |
+          mv -f trilium/* ./
           mkdir -p dist/trilium-src 
           npm install
+
+    - name: disable auto-update
+      run: python disable_update.py
+
     
     - name: build
       run:  bin/build.sh
