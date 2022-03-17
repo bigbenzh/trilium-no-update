@@ -26,6 +26,9 @@ on:
 jobs:
   compile:
     runs-on: ubuntu-18.04
+    defaults:
+      run:
+        shell: bash
     steps:
     - name: Check out Git repository
       uses: actions/checkout@v2
