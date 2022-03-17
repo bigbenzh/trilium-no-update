@@ -22,6 +22,8 @@ on:
         type: boolean
         required: true
         default: true
+  schedule:
+  - cron: 0 0 */7 * *
         
 jobs:
   compile:
@@ -70,15 +72,50 @@ jobs:
     - name: build
       run:  bin/build.sh
 
+    - name: upload
+      uses: actions/upload-artifact@v3
+      with:
+        path: dist/
+
+  release:
+    if: ${{ github.event_name == 'workflow_dispatch'}}
+    needs: compile
+    runs-on: ubuntu-latest
+    steps:
+    - name: download
+      uses: actions/download-artifact@v3
+      with:
+        name: artifact
+
     - name: Create Release Draft
       uses: softprops/action-gh-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: "v0.01"
         name: test
         body: "TODO: Fill this changelog. Sorry for the inconvenience!"
         draft: ${{ github.event.inputs.is-draft }}
         prerelease: ${{ github.event.inputs.is-pre-release }}
         files: |
-          dist/*.*
+          *.*
+          
+  auto-release:
+    if: ${{ github.event_name == 'schedule'}}
+    needs: compile
+    runs-on: ubuntu-latest
+    steps:
+    - name: download
+      uses: actions/download-artifact@v3
+      with:
+        name: artifact
+
+    - name: Create Release Draft
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        name: auto-build
+        body: "An auto build of the latest Trilium"
+        prerelease: false
+        files: |
+          *.*
