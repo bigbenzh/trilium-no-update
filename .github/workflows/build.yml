@@ -40,6 +40,9 @@ jobs:
           repository: zadam/trilium
           path: trilium
           
+    - name: use the latest version
+      run: cd trilium/ && git checkout $(git describe --tags $(git rev-list --tags --max-count=1))
+          
     - name: Install Wine
       run: |
           sudo dpkg --add-architecture i386
